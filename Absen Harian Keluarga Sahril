@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Absen Harian Keluarga</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #4e54c8, #8f94fb);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 30px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+    }
+
+    input, select, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #00c6ff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #0072ff;
+    }
+
+    .log {
+      margin-top: 20px;
+      text-align: left;
+      background: rgba(0,0,0,0.3);
+      padding: 10px;
+      border-radius: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .log p {
+      font-size: 0.9rem;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📋 Absen Harian Keluarga Sahril</h1>
+    <input type="text" id="nama" placeholder="Nama kamu">
+    <select id="status">
+      <option value="">-- Pilih keadaan kamu --</option>
+      <option value="Lagi di rumah 🏠">Lagi di rumah 🏠</option>
+      <option value="Lagi sekolah 🎒">Lagi sekolah 🎒</option>
+      <option value="Lagi kerja 💼">Lagi kerja 💼</option>
+      <option value="Lagi keluar 🚶‍♂️">Lagi keluar 🚶‍♂️</option>
+      <option value="Lagi makan 🍜">Lagi makan 🍜</option>
+      <option value="Lagi istirahat 😴">Lagi istirahat 😴</option>
+    </select>
+    <button onclick="absen()">Kirim Absen</button>
+
+    <div class="log" id="log"></div>
+  </div>
+
+  <script>
+    function absen() {
+      const nama = document.getElementById('nama').value.trim();
+      const status = document.getElementById('status').value;
+      const waktu = new Date().toLocaleString('id-ID', { hour12: false });
+
+      if (!nama || !status) {
+        alert('Isi nama dan status dulu ya!');
+        return;
+      }
+
+      const logBox = document.getElementById('log');
+      const entry = document.createElement('p');
+      entry.textContent = `${waktu} — ${nama}: ${status}`;
+      logBox.prepend(entry);
+
+      // Simpan ke localStorage biar nggak hilang kalau refresh
+      const data = JSON.parse(localStorage.getItem('absenKeluarga')) || [];
+      data.unshift(entry.textContent);
+      localStorage.setItem('absenKeluarga', JSON.stringify(data));
+    }
+
+    // Load data lama
+    window.onload = function() {
+      const data = JSON.parse(localStorage.getItem('absenKeluarga')) || [];
+      const logBox = document.getElementById('log');
+      data.forEach(d => {
+        const p = document.createElement('p');
+        p.textContent = d;
+        logBox.appendChild(p);
+      });
+    };
+  </script>
+</body>
+</html>
